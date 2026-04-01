@@ -91,6 +91,13 @@
     --shadow-hover: 0 0 0 4px #000000;
 }
 
+[data-theme="accessible"] .comment-card,
+[data-theme="accessible"] .comment-card .text,
+[data-theme="accessible"] .comment-card .meta {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
 [data-theme="accessible"] body {
     font-size: 1.1rem;
     line-height: 1.5;

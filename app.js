@@ -334,14 +334,14 @@ function updateOverview() {
         if (studBar) studBar.style.width = studWidth + '%';
     }
 
-    const allSortedActivities = Object.keys(activityCountMap).sort((a, b) => activityCountMap[b] - activityCountMap[a]);
+    const allSortedActivities = Object.keys(activityMap).sort((a, b) => activityMap[b] - activityMap[a]);
     const topActivityEl = document.getElementById('kpi-top-activity');
     if (topActivityEl) {
         if (allSortedActivities.length > 0) {
-            const maxCount = activityCountMap[allSortedActivities[0]];
-            const topTies = allSortedActivities.filter(activity => activityCountMap[activity] === maxCount);
-            // Include a smaller count label so the user knows how many times it was chosen
-            topActivityEl.innerHTML = `${topTies.join(', ')} <span style="font-size: 1.1rem; color: var(--text-secondary); opacity: 0.8; margin-left: 0.2rem;">(${maxCount})</span>`;
+            const maxDurationMs = activityMap[allSortedActivities[0]];
+            const topTies = allSortedActivities.filter(activity => activityMap[activity] === maxDurationMs);
+            // Include a smaller duration label so the user knows the biggest activity block
+            topActivityEl.innerHTML = `${topTies.join(', ')} <span style="font-size: 1.1rem; color: var(--text-secondary); opacity: 0.8; margin-left: 0.2rem;">(${formatMsToTime(maxDurationMs)})</span>`;
         } else {
             topActivityEl.textContent = '-';
         }
@@ -404,8 +404,8 @@ function updateOverview() {
     });
 
     // Prepare Bar Chart
-    const sortedActivitiesCount = Object.keys(activityCountMap).sort((a, b) => activityCountMap[b] - activityCountMap[a]);
-    const barDataCount = sortedActivitiesCount.map(k => activityCountMap[k]); // Count 
+    const sortedActivitiesCount = allSortedActivities;
+    const barDataMinutes = sortedActivitiesCount.map(k => Number((activityMap[k] / 60000).toFixed(1))); // Duration in minutes
 
     const chartColors = sortedActivitiesCount.map((_, i) => colors.generic[i % colors.generic.length]);
 
@@ -422,8 +422,8 @@ function updateOverview() {
         data: {
             labels: sortedActivitiesCount,
             datasets: [{
-                label: 'Occurrences',
-                data: barDataCount,
+                label: 'Duration (minutes)',
+                data: barDataMinutes,
                 backgroundColor: chartColors,
                 borderRadius: 4
             }]
@@ -435,29 +435,40 @@ function updateOverview() {
                 padding: { right: 30 }
             },
             scales: {
-                y: { beginAtZero: true, grid: { borderDash: [4, 4] } },
                 x: {
+                    title: { display: true, text: 'Activity Category', font: { size: 14, weight: '700' } },
                     grid: { display: false },
                     ticks: {
-                        maxRotation: 90,
-                        minRotation: 90,
+                        maxRotation: 45,
+                        minRotation: 45,
                         autoSkip: false,
-                        font: { size: 14, weight: '700' },
+                        font: { size: 13, weight: '700' },
                         color: '#000'
-                    },
-                    afterFit: function(axis) {
-                        axis.height = 220; // Force more vertical space for larger labels
                     }
                 },
                 y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Duration (minutes)', font: { size: 14, weight: '700' } },
+                    grid: { borderDash: [4, 4] },
                     ticks: {
-                        font: { size: 14, weight: '700' },
+                        callback: value => `${value}m`,
+                        font: { size: 13, weight: '600' },
                         color: '#000'
                     }
                 }
             },
             plugins: {
                 legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => {
+                            const activity = ctx.label;
+                            const activityMs = (activityMap[activity] || 0);
+                            const percentage = totalMs ? ((activityMs / totalMs) * 100).toFixed(1) : '0.0';
+                            return `Duration: ${formatMsToTime(activityMs)} (${percentage}%)`;
+                        }
+                    }
+                },
                 datalabels: { display: false }
             }
         }

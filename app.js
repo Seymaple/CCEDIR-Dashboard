@@ -559,8 +559,16 @@ function updateDayView() {
                         label: (ctx) => {
                             const start = new Date(ctx.raw.x[0]);
                             const end = new Date(ctx.raw.x[1]);
+                            const durationMs = end - start;
                             const timeStr = `${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours()}:${end.getMinutes().toString().padStart(2, '0')}`;
-                            return `${ctx.raw.focus} Focus | ${timeStr}`;
+                            const sessionDurationMs = session.totalMs || 0;
+                            const percentage = sessionDurationMs ? ((durationMs / sessionDurationMs) * 100).toFixed(1) : '0.0';
+
+                            return [
+                                `Time range: ${timeStr}`,
+                                `Duration: ${formatMsToTime(durationMs)} (${percentage}%)`,
+                                `Focus: ${ctx.raw.focus}`
+                            ];
                         }
                     }
                 },

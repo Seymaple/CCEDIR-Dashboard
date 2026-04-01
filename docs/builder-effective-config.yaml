@@ -1,0 +1,10 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.ccedir.dashboard
+productName: CCEDIR Dashboard
+win:
+  target: nsis
+  icon: icons/Leaf.png
+files: []
+electronVersion: 28.3.3

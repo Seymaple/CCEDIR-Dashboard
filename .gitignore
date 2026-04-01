@@ -1,0 +1,31 @@
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+out/
+docs/win-unpacked/
+docs/win-packed/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Electron
+node_modules/
+*.asar
+
+# Logs
+*.log
+npm-debug.log*
+

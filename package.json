@@ -1,0 +1,32 @@
+{
+  "name": "ccedir-dashboard",
+  "version": "1.0.0",
+  "description": "CCEDIR Dashboard Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "CCEDIR Team",
+  "license": "ISC",
+  "devDependencies": {
+    "bestzip": "^2.2.2",
+    "electron": "^28.0.0",
+    "electron-builder": "^26.8.1",
+    "electron-packager": "^17.1.2"
+  },
+  "build": {
+    "appId": "com.ccedir.dashboard",
+    "productName": "CCEDIR Dashboard",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "dependencies": {
+    "png-to-ico": "^3.0.1"
+  }
+}

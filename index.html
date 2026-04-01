@@ -25,22 +25,22 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
-                <img src="icons/Leaf.png" alt="Logo" style="width: 60px; height: auto;" />
+                <img src="icons/Leaf.png" alt="The Grove Center Logo - stylized Leaf Icon" style="width: 60px; height: auto;" />
             </div>
 
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-view="overview" title="Course Overview">
-                    <span class="icon"><img src="icons/overview.png" alt="Overview"
+            <nav class="nav-menu" aria-label="Main Navigation">
+                <a href="#" class="nav-item active" data-view="overview" aria-current="page">
+                    <span class="icon"><img src="icons/overview.png" alt="Course overview icon, this button leads to the courses general overview"
                             style="width: 40px; height: auto; display: block;" /></span>
                     <span class="text-label">Overview</span>
                 </a>
-                <a href="#" class="nav-item" data-view="day-by-day" title="Day by Day">
-                    <span class="icon"><img src="icons/Chart.png" alt="Chart"
+                <a href="#" class="nav-item" data-view="day-by-day" aria-label="Day by Day Analysis">
+                    <span class="icon"><img src="icons/Chart.png" alt="Day by Day Analysis icon, this button leads to detailed day by day analysis of the course data"
                             style="width: 40px; height: auto; display: block;" /></span>
                     <span class="text-label">Day by Day</span>
                 </a>
-                <a href="#" class="nav-item" data-view="comments" title="Comments">
-                    <span class="icon"><img src="icons/Comment.png" alt="Comments"
+                <a href="#" class="nav-item" data-view="comments" aria-label="View Comments">
+                    <span class="icon"><img src="icons/Comment.png" alt="Comments icon, this button leads to the comments section where you can view detailed comments and notes from the sessions"
                             style="width: 40px; height: auto; display: block;" /></span>
                     <span class="text-label">Comments</span>
                 </a>
@@ -52,26 +52,28 @@
             <!-- Full width black top banner for overview page -->
             <div id="overview-top-banner"
                 style="background-color: black; margin: -2.5rem -4rem 2.5rem -4rem; padding: 2rem 4rem 3rem 4rem; display: block;">
-                <img src="CCEDIR.PNG" alt="CCEDIR Logo" style="height: 160px; display: block;" />
+                <img src="CCEDIR.PNG" alt="CCEDIR: Capturing Classroom Engagement Data For Instructor Reflection" style="height: 160px; display: block;" />
             </div>
 
             <!-- Header -->
             <header class="top-header">
-                <h1 id="view-title">Analytics</h1>
+                <h1 id="view-title">Course Analytics Dashboard</h1>
+                <h2 class="sr-only">Dashboard overview metrics</h2>
 
                 <div class="header-controls">
                     <!-- Theme Dropdown -->
                     <div class="select-wrapper" style="padding: 0.4rem 1rem; margin-right: 0.5rem; border: 1px solid var(--surface-border);">
-                        <select id="theme-select" style="font-size: 0.9rem; font-weight: 600;">
+                        <label for="theme-select" style="margin-right: 0.5rem; font-weight: 700;">Theme:</label>
+                        <select id="theme-select" style="font-size: 0.9rem; font-weight: 600;" aria-label="Choose a color theme">
                             <option value="default">Light Mode</option>
                             <option value="accessible">Accessible Contrast</option>
                             <option value="dark">Dark Mode</option>
                         </select>
                     </div>
 
-                    <button id="refresh-btn" class="btn-primary"
+                    <button id="refresh-btn" class="btn-primary" aria-label="Refresh data and charts"
                         style="background: var(--surface-color); color: var(--text-primary); border: 1px solid var(--surface-border); margin-right: 0.5rem;">&#x21bb; Refresh</button>
-                    <button id="download-pdf-btn" class="btn-primary"
+                    <button id="download-pdf-btn" class="btn-primary" aria-label="Download dashboard as PDF"
                         style="background: var(--accent-primary); color: white;">Download PDF</button>
 
                     <div class="upload-pill" id="file-count-pill" style="display:none;">
@@ -81,9 +83,9 @@
 
                     <div class="upload-dropdown">
                         <label for="file-upload" class="btn-primary" style="gap:0.5rem;">
-                            <span style="font-size:1.2rem;">+</span> Upload Data
+                            <span style="font-size:1.2rem;">+</span> Upload CSV Data
                         </label>
-                        <input type="file" id="file-upload" accept=".csv" style="display:none;" />
+                        <input type="file" id="file-upload" accept=".csv" style="display:none;" aria-label="Upload CSV file with classroom engagement data" />
                         <div id="drop-zone" style="display:none;"></div>
                         <!-- Keep for JS compatibility if needed or removed logic -->
                     </div>
@@ -98,7 +100,7 @@
                     <div class="kpi-grid">
                         <div class="kpi-card card-gradient">
                             <h3>Total Tracked Time</h3>
-                            <p class="kpi-value" id="kpi-total-time">0h 0m</p>
+                            <span class="kpi-value" id="kpi-total-time">0h 0m</span>
                             <div class="kpi-subtext">
                                 <div class="kpi-split">
                                     <span>Activities</span>
@@ -128,9 +130,9 @@
                         </div>
                         <div class="kpi-card">
                             <h3>Top Activity</h3>
-                            <p class="kpi-value" id="kpi-top-activity"
+                            <span class="kpi-value" id="kpi-top-activity"
                                 style="font-size: 1.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                -</p>
+                                -</span>
                         </div>
                         <div class="kpi-card">
                             <h3>Focus Distribution</h3>
@@ -155,7 +157,7 @@
                     <div class="controls-row">
                         <div class="select-wrapper">
                             <label for="day-select">Select Session:</label>
-                            <select id="day-select">
+                            <select id="day-select" aria-label="Choose a session to view">
                                 <option value="" disabled selected>No data loaded</option>
                             </select>
                         </div>
@@ -210,13 +212,13 @@
                     <div class="controls-row">
                         <div class="select-wrapper">
                             <label for="comment-day-select">Select Session:</label>
-                            <select id="comment-day-select">
+                            <select id="comment-day-select" aria-label="Choose a session to view comments">
                                 <option value="" disabled selected>No data loaded</option>
                             </select>
                         </div>
                         <div class="select-wrapper" style="margin-left: 1rem;">
                             <label for="question-type-select">Filter by Activity:</label>
-                            <select id="question-type-select">
+                            <select id="question-type-select" aria-label="Filter comments by activity type">
                                 <option value="" disabled selected>No data loaded</option>
                             </select>
                         </div>

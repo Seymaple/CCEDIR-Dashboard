@@ -5,7 +5,7 @@
     --surface-border: rgba(0, 0, 0, 0.04);
 
     --text-primary: #1e1e2d;
-    --text-secondary: #8b8b99;
+    --text-secondary: #4a4a52;
     --text-white: #ffffff;
 
     --header-bg: #e2e4e9;
@@ -91,11 +91,47 @@
     --shadow-hover: 0 0 0 4px #000000;
 }
 
+[data-theme="accessible"] body {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+[data-theme="accessible"] h1,
+[data-theme="accessible"] h2,
+[data-theme="accessible"] h3,
+[data-theme="accessible"] h4,
+[data-theme="accessible"] h5,
+[data-theme="accessible"] h6 {
+    font-size: 1.1em;
+}
+
+[data-theme="accessible"] .kpi-card,
+[data-theme="accessible"] .chart-card,
+[data-theme="accessible"] .comment-card,
+[data-theme="accessible"] .select-wrapper,
+[data-theme="accessible"] .btn-primary,
+[data-theme="accessible"] .upload-pill {
+    font-size: 1.05rem;
+}
+
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: inherit;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 body {
@@ -159,7 +195,7 @@ h4 {
     width: 65px;
     height: 65px;
     border-radius: 20px;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
     font-size: 1.5rem;
     transition: all 0.3s ease;
@@ -394,6 +430,18 @@ h4 {
     color: var(--text-primary);
     cursor: pointer;
     background: transparent;
+}
+
+.select-wrapper select:focus {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+.select-wrapper label {
+    margin-right: 0.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .controls-row {

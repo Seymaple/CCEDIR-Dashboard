@@ -384,13 +384,20 @@ function updateOverview() {
                 },
                 legend: { position: 'bottom' },
                 datalabels: {
-                    color: '#fff',
+                    color: '#000',
                     formatter: (value, ctx) => {
                         let sum = ctx.chart._metasets[0].total;
                         let percentage = Math.round(value / sum * 100);
-                        return percentage > 5 ? percentage + '%' : '';
+                        return percentage > 3 ? percentage + '%' : '';
                     },
-                    font: { weight: 'bold' }
+                    font: { weight: 'bold', size: 14 },
+                    anchor: 'center',
+                    align: 'center',
+                    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                    borderRadius: 4,
+                    borderColor: '#000',
+                    borderWidth: 0.5,
+                    padding: { top: 2, bottom: 2, left: 5, right: 5 }
                 }
             }
         }
@@ -435,10 +442,17 @@ function updateOverview() {
                         maxRotation: 90,
                         minRotation: 90,
                         autoSkip: false,
-                        font: { size: 10 }
+                        font: { size: 14, weight: '700' },
+                        color: '#000'
                     },
                     afterFit: function(axis) {
-                        axis.height = 200; // Force exactly 200px of vertical space for the labels to draw in
+                        axis.height = 220; // Force more vertical space for larger labels
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: { size: 14, weight: '700' },
+                        color: '#000'
                     }
                 }
             },
@@ -530,7 +544,8 @@ function updateDayView() {
                 y: {
                     type: 'category',
                     labels: uniqueActivities, // y-axis categories based on all available activities
-                    title: { display: true, text: 'Activity' },
+                    title: { display: true, text: 'Activity', font: { size: 15, weight: '700' } },
+                    ticks: { font: { size: 14, weight: '700' }, color: '#000' },
                     grid: { display: true }
                 }
             },

@@ -253,6 +253,7 @@ h4 {
     display: flex;
     align-items: center;
     gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .btn-primary {
@@ -269,6 +270,7 @@ h4 {
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-soft);
+    white-space: nowrap;
 }
 
 .btn-primary:hover {
@@ -320,7 +322,7 @@ h4 {
 /* Overriding older generic KPI styles to use the new card aesthetic */
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2rem;
     margin-bottom: 2.5rem;
 }
@@ -387,6 +389,12 @@ h4 {
     gap: 2rem;
 }
 
+@media (max-width: 1024px) {
+    .charts-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
 .chart-card {
     background: var(--surface-color);
     border-radius: var(--radius-xl);
@@ -426,6 +434,7 @@ h4 {
     padding: 0.6rem 1.5rem;
     border-radius: 30px;
     box-shadow: var(--shadow-soft);
+    min-width: auto;
 }
 
 .select-wrapper select {
@@ -455,6 +464,8 @@ h4 {
     margin-bottom: 2.5rem;
     display: flex;
     justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 /* Comments Grid */
@@ -567,4 +578,170 @@ body.pdf-export .chart-container {
     min-height: 300px !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 1.5rem 2rem;
+    }
+
+    .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .header-controls {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .select-wrapper {
+        flex: 1 1 auto;
+        min-width: 180px;
+    }
+
+    .btn-primary {
+        flex: 1 1 auto;
+        min-width: 140px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .charts-grid-2 {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 80px;
+        padding: 1.5rem 0;
+    }
+
+    .main-content {
+        margin-left: 80px;
+        padding: 1rem 1.5rem;
+    }
+
+    .top-header {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .top-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .header-controls {
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .select-wrapper {
+        min-width: 150px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .select-wrapper label {
+        display: none;
+    }
+
+    .btn-primary {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .kpi-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .controls-row {
+        gap: 0.5rem;
+    }
+
+    .select-wrapper {
+        flex: 0 1 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 70px;
+        padding: 1rem 0;
+    }
+
+    .main-content {
+        margin-left: 70px;
+        padding: 0.75rem 1rem;
+    }
+
+    .top-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .top-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-controls {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .select-wrapper {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .kpi-card {
+        padding: 1rem 0.75rem;
+    }
+
+    .chart-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .upload-pill {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+
+    .controls-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .select-wrapper {
+        width: 100%;
+    }
+
+    .select-wrapper label {
+        display: inline;
+        margin-right: 0.5rem;
+    }
 }

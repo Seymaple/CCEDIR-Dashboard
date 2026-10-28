@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCEDIR // Classroom Engagement Protocol</title>
+    <!-- Google Fonts: Space Grotesk, Syne, JetBrains Mono, Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js & Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <!-- PapaParse for CSV parsing & PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css?v=cyberpunk">
+</head>
+
+<body class="cyber-theme">
+    <div id="app" class="site-container">
+
+        <!-- Top Cyber Header Navigation -->
+        <header class="cyber-header">
+            <div class="cyber-header-left">
+                <div class="cyber-brand">
+                    <img src="icons/Leaf.png" alt="Grove Center Logo" class="brand-logo" />
+                    <div class="brand-text">
+                        <span class="brand-title">CCEDIR<span class="neon-dot">.</span></span>
+                        <span class="brand-subtitle">PROTOCOL // v2.6</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Cyber Section Tabs -->
+            <nav class="cyber-nav" aria-label="Main Navigation">
+                <a href="#" class="nav-item active" data-view="overview" aria-current="page">
+                    <span class="nav-num">01 /</span> OVERVIEW
+                </a>
+                <a href="#" class="nav-item" data-view="day-by-day">
+                    <span class="nav-num">02 /</span> DAY BY DAY
+                </a>
+                <a href="#" class="nav-item" data-view="comments">
+                    <span class="nav-num">03 /</span> COMMENTS
+                </a>
+                <a href="#" class="nav-item" data-view="case-study">
+                    <span class="nav-num">04 /</span> CASE STUDY
+                </a>
+            </nav>
+
+            <div class="cyber-header-actions">
+                <!-- Theme Select (Maintained for JS compatibility) -->
+                <div class="select-wrapper cyber-select-wrap">
+                    <label for="theme-select" class="cyber-label">MODE:</label>
+                    <select id="theme-select" aria-label="Choose a color theme">
+                        <option value="dark" selected>VOID DARK</option>
+                        <option value="default">LIGHT MODE</option>
+                        <option value="accessible">ACCESSIBLE CONTRAST</option>
+                    </select>
+                </div>
+
+                <button id="refresh-btn" class="cyber-btn cyber-btn-secondary" aria-label="Refresh data">&#x21bb; REFRESH</button>
+                <button id="download-pdf-btn" class="cyber-btn cyber-btn-primary">DOWNLOAD PDF ↗</button>
+
+                <div class="upload-pill" id="file-count-pill" style="display:none;">
+                    <span class="status-dot"></span>
+                    <span id="header-total-sessions-text">0 files loaded</span>
+                </div>
+
+                <div class="upload-dropdown">
+                    <label for="file-upload" class="cyber-btn cyber-btn-neon">
+                        + UPLOAD DATA ↗
+                    </label>
+                    <input type="file" id="file-upload" accept=".csv" style="display:none;" aria-label="Upload CSV file" />
+                    <div id="drop-zone" style="display:none;"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section (Voidrunner Editorial Style) -->
+        <section class="cyber-hero">
+            <div class="hero-content">
+                <div class="hero-badge">A PROTOCOL BY GROVE CENTER / 2026</div>
+                <h1 class="hero-title">
+                    CCEDIR<br>
+                    <span class="neon-text">ANALYTICS.</span>
+                </h1>
+                <p class="hero-tagline">
+                    Capturing classroom engagement data for instructor reflection. Climb through real-time session timelines, analyze student focus, and decode active learning metrics.
+                </p>
+                <div class="hero-actions">
+                    <label for="file-upload" class="cyber-btn cyber-btn-neon hero-btn">
+                        LAUNCH DATA FEED ↗
+                    </label>
+                    <a href="#app-content" class="cyber-btn cyber-btn-outline hero-btn">
+                        EXPLORE DASHBOARD ↓
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-banner-image" id="overview-top-banner">
+                <img src="CCEDIR.PNG" alt="CCEDIR Banner Logo" />
+            </div>
+        </section>
+
+        <!-- Marquee Ticker Bar (Voidrunner Signature Aesthetic) -->
+        <div class="ticker-bar">
+            <div class="ticker-track">
+                <span>SIGNAL +</span>
+                <span>RUN THE PROTOCOL +</span>
+                <span>BREAK THE SILENCE +</span>
+                <span>ENGAGEMENT METRICS +</span>
+                <span>INSTRUCTOR REFLECTION +</span>
+                <span>ACTIVE LEARNING DATA +</span>
+                <span>SIGNAL +</span>
+                <span>RUN THE PROTOCOL +</span>
+                <span>BREAK THE SILENCE +</span>
+                <span>ENGAGEMENT METRICS +</span>
+                <span>INSTRUCTOR REFLECTION +</span>
+                <span>ACTIVE LEARNING DATA +</span>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Content Container -->
+        <main id="app-content" class="main-content">
+            <div class="view-header-bar">
+                <h2 id="view-title" class="current-view-title">Course Analytics Dashboard</h2>
+            </div>
+
+            <div class="content-wrapper">
+
+                <!-- 01 / Overview View -->
+                <div id="view-overview" class="view-panel active">
+                    
+                    <div class="section-tag">01 / OVERVIEW METRICS</div>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-card cyber-card highlight-card">
+                            <div class="card-meta">01 // TRACKING</div>
+                            <h3>Total Tracked Time</h3>
+                            <span class="kpi-value neon-glow" id="kpi-total-time">0h 0m</span>
+                            <div class="kpi-subtext">
+                                <div class="kpi-split">
+                                    <span>Observed Activities</span>
+                                    <span id="kpi-total-events" class="mono-num">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card cyber-card">
+                            <div class="card-meta">02 // BALANCE</div>
+                            <h3>Focus Balance</h3>
+                            <div style="margin-top:auto; width: 100%;">
+                                <div class="focus-labels">
+                                    <span>Instructor Focus</span>
+                                    <span>Student Focus</span>
+                                </div>
+                                <div class="focus-progress-bar">
+                                    <div id="kpi-bar-inst" style="width:50%;"></div>
+                                    <div id="kpi-bar-stud" style="width:50%;"></div>
+                                </div>
+                                <div class="focus-values">
+                                    <span class="kpi-value" id="kpi-instructor-focus">0%</span>
+                                    <span class="kpi-value neon-text" id="kpi-student-focus">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card cyber-card">
+                            <div class="card-meta">03 // DOMINANT MODE</div>
+                            <h3>Top Activity</h3>
+                            <span class="kpi-value top-activity-text" id="kpi-top-activity">-</span>
+                        </div>
+
+                        <div class="kpi-card cyber-card">
+                            <div class="card-meta">04 // DISTRIBUTION</div>
+                            <h3>Focus Distribution</h3>
+                            <div class="chart-container" style="height: 180px; width: 100%; margin-top: auto;">
+                                <canvas id="focusPieChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="chart-card cyber-card full-width-card">
+                        <div class="card-header-bar">
+                            <div class="card-meta">05 // AGGREGATED METRICS</div>
+                            <h3>Activity Breakdown (Total Time)</h3>
+                        </div>
+                        <div class="chart-container main-bar-container">
+                            <canvas id="activityBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 02 / Day by Day View -->
+                <div id="view-day-by-day" class="view-panel" style="display: none;">
+                    
+                    <div class="section-tag">02 / SESSION BREAKDOWN</div>
+
+                    <div class="controls-row cyber-card mb-20">
+                        <div class="select-wrapper cyber-select-wrap">
+                            <label for="day-select" class="cyber-label">SELECT SESSION SIGNAL:</label>
+                            <select id="day-select" aria-label="Choose a session to view">
+                                <option value="" disabled selected>No session data loaded</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="charts-grid-full cyber-card timeline-container" id="day-timeline-section">
+                        <div class="card-header-bar">
+                            <div class="card-meta">TIMELINE PROTOCOL</div>
+                            <h3>Session Activity Timeline</h3>
+                        </div>
+                        <div class="chart-container timeline-chart-wrapper">
+                            <canvas id="dayTimelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="charts-grid-2 mt-40" id="day-activities-section">
+                        <!-- Left Column -->
+                        <div class="column-block">
+                            <div id="activity-times-left-block" class="chart-card cyber-card flex-column">
+                                <div class="card-header-bar">
+                                    <div class="card-meta">DURATION MATRIX</div>
+                                    <h3>Total Time by Activity Description</h3>
+                                </div>
+                                <div id="activity-times-container" class="cyber-scroll-container">
+                                    <div class="empty-state-text">No data loaded</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="column-block">
+                            <div class="chart-card cyber-card">
+                                <div class="card-header-bar">
+                                    <div class="card-meta">OCCURRENCE METRICS</div>
+                                    <h3>Session Activities</h3>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="dayActivityChart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <div class="chart-card cyber-card stat-center-card">
+                                <div class="card-meta">CATEGORY INDEX</div>
+                                <h3>Categories Tracked</h3>
+                                <div class="giant-stat-number">
+                                    <span id="day-categories-used" class="neon-text">0</span>
+                                    <span class="stat-total">/ 21</span>
+                                </div>
+                                <p class="stat-caption">Total Unique Activities Observed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 03 / Comments View -->
+                <div id="view-comments" class="view-panel" style="display: none;">
+                    
+                    <div class="section-tag">03 / SESSION COMMENTS & OBSERVATIONS</div>
+
+                    <div class="controls-row cyber-card mb-20 flex-wrap">
+                        <div class="select-wrapper cyber-select-wrap">
+                            <label for="comment-day-select" class="cyber-label">SESSION:</label>
+                            <select id="comment-day-select" aria-label="Choose a session to view comments">
+                                <option value="" disabled selected>No session data loaded</option>
+                            </select>
+                        </div>
+                        <div class="select-wrapper cyber-select-wrap">
+                            <label for="question-type-select" class="cyber-label">FILTER ACTIVITY:</label>
+                            <select id="question-type-select" aria-label="Filter comments by activity type">
+                                <option value="" disabled selected>No data loaded</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="comments-grid" id="comments-container">
+                        <div class="comment-card comments-empty cyber-card">
+                            Select a session to view activities and commentary
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 04 / Case Study View -->
+                <div id="view-case-study" class="view-panel" style="display: none;">
+                    
+                    <div class="section-tag">04 / CASE STUDY HIGHLIGHTS</div>
+
+                    <div class="case-study-intro cyber-card mb-20">
+                        <div class="card-meta">SYNTHESIS & INSIGHTS</div>
+                        <h3>Case Study Analysis</h3>
+                        <p>Surfacing deep patterns in classroom engagement data to frame strategic instructor reflection.</p>
+                    </div>
+
+                    <div id="case-study-content" class="case-study-grid"></div>
+
+                    <div class="case-study-timeline-card cyber-card mt-40">
+                        <div class="case-study-timeline-header">
+                            <div>
+                                <div class="card-meta">INTERACTIVE TIMELINE PROTOCOL</div>
+                                <h3>Full Session Interactive Timeline</h3>
+                            </div>
+                            <button type="button" id="case-study-reset-timeline" class="cyber-btn cyber-btn-outline">RESET TIMELINE ↗</button>
+                        </div>
+                        <div class="case-study-timeline-chart">
+                            <canvas id="case-study-timeline-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Voidrunner Style Footer Section -->
+        <footer class="cyber-footer">
+            <div class="footer-cta">
+                <div class="footer-meta neon-text">TRANSMISSION READY // 2026</div>
+                <h2 class="footer-title">
+                    YOUR DATA<br>
+                    <span class="neon-text">IS OPEN.</span>
+                </h2>
+                <div class="footer-actions">
+                    <label for="file-upload" class="cyber-btn cyber-btn-neon">
+                        GET METRICS UPDATES ↗
+                    </label>
+                </div>
+            </div>
+            <div class="footer-bar">
+                <div>© 2026 GROVE CENTER STUDIO</div>
+                <div class="footer-center">PROTOTYPE // CCEDIR ENGAGEMENT DATA PLATFORM</div>
+                <div><a href="#app" class="back-to-top">BACK TO TOP ↑</a></div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- External Libraries & Application Logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="case-study-data.js"></script>
+    <script src="app.js?v=cyberpunk"></script>
+</body>
+
+</html>

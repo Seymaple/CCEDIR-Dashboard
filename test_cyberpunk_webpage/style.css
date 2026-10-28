@@ -1,0 +1,963 @@
+/* ==========================================================================
+   VOIDRUNNER CYBERPUNK EDITORIAL DESIGN SYSTEM
+   CCEDIR Classroom Engagement Protocol
+   ========================================================================== */
+
+:root {
+    --bg-dark: #070709;
+    --bg-subtle: #0d0d11;
+    --surface-card: #121216;
+    --surface-card-hover: #18181f;
+    --border-subtle: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    
+    /* Neon Cyberpunk Accents from Screenshots */
+    --accent-neon: #c6ff00;      /* Electric Neon Lime / Cyber Yellow */
+    --accent-neon-glow: rgba(198, 255, 0, 0.35);
+    --accent-cyan: #00f0ff;      /* Cyber Cyan */
+    --accent-magenta: #ff0055;   /* Cyber Pink */
+
+    --text-primary: #ffffff;
+    --text-secondary: #9494a0;
+    --text-muted: #5e5e6a;
+
+    --font-heading: 'Syne', 'Space Grotesk', -apple-system, sans-serif;
+    --font-body: 'Space Grotesk', 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Theme fallback variable overrides for Chart JS compatibility */
+    --accent-primary: var(--accent-neon);
+    --accent-secondary: var(--accent-cyan);
+    --surface-color: var(--surface-card);
+    --surface-border: var(--border-subtle);
+}
+
+/* Data Theme Overrides if user selects other themes in dropdown */
+[data-theme="default"] {
+    --bg-dark: #f8fafc;
+    --bg-subtle: #f1f5f9;
+    --surface-card: #ffffff;
+    --surface-card-hover: #f8fafc;
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --accent-neon: #16a34a;
+    --accent-neon-glow: rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="accessible"] {
+    --bg-dark: #000000;
+    --bg-subtle: #111111;
+    --surface-card: #1a1a1a;
+    --surface-card-hover: #262626;
+    --border-subtle: #ffffff;
+    --border-strong: #ffff00;
+    --text-primary: #ffffff;
+    --text-secondary: #ffff00;
+    --text-muted: #cccccc;
+    --accent-neon: #ffff00;
+    --accent-neon-glow: rgba(255, 255, 0, 0.4);
+}
+
+/* ==========================================================================
+   RESET & BASE STYLES
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body.cyber-theme {
+    background-color: var(--bg-dark);
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.site-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Typography Helpers */
+.neon-text {
+    color: var(--accent-neon);
+}
+
+.neon-glow {
+    color: var(--accent-neon);
+    text-shadow: 0 0 12px var(--accent-neon-glow);
+}
+
+.neon-dot {
+    color: var(--accent-neon);
+}
+
+.mono-num {
+    font-family: var(--font-mono);
+}
+
+.section-tag {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--accent-neon);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+    margin-left: 1rem;
+}
+
+.section-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 3rem 0;
+    width: 100%;
+}
+
+/* ==========================================================================
+   HEADER & NAVIGATION (VOIDRUNNER HIGH-TECH HEADER)
+   ========================================================================== */
+
+.cyber-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 3rem;
+    background: rgba(7, 7, 9, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.cyber-header-left {
+    display: flex;
+    align-items: center;
+}
+
+.cyber-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+}
+
+.brand-logo {
+    width: 36px;
+    height: auto;
+    filter: drop-shadow(0 0 8px var(--accent-neon-glow));
+}
+
+.brand-title {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+    display: block;
+    line-height: 1;
+}
+
+.brand-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 0.2rem;
+}
+
+/* Main Nav Tabs */
+.cyber-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.cyber-nav .nav-item {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.cyber-nav .nav-item .nav-num {
+    color: var(--accent-neon);
+    opacity: 0.7;
+}
+
+.cyber-nav .nav-item:hover {
+    color: var(--text-primary);
+}
+
+.cyber-nav .nav-item.active {
+    color: var(--accent-neon);
+    border-bottom-color: var(--accent-neon);
+}
+
+.cyber-nav .nav-item.active .nav-num {
+    opacity: 1;
+}
+
+/* Header Action Controls */
+.cyber-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+/* Buttons */
+.cyber-btn {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.25rem;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.25 ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+
+.cyber-btn-neon {
+    background-color: var(--accent-neon);
+    color: #000000;
+    border-color: var(--accent-neon);
+    font-weight: 800;
+}
+
+.cyber-btn-neon:hover {
+    background-color: #d4ff33;
+    box-shadow: 0 0 20px var(--accent-neon-glow);
+    transform: translateY(-1px);
+}
+
+.cyber-btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+}
+
+.cyber-btn-outline:hover {
+    border-color: var(--accent-neon);
+    color: var(--accent-neon);
+}
+
+.cyber-btn-secondary {
+    background: var(--surface-card);
+    color: var(--text-primary);
+    border-color: var(--border-subtle);
+}
+
+.cyber-btn-secondary:hover {
+    background: var(--surface-card-hover);
+    border-color: var(--border-strong);
+}
+
+.cyber-btn-primary {
+    background: #18181f;
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+}
+
+.cyber-btn-primary:hover {
+    border-color: var(--accent-neon);
+    color: var(--accent-neon);
+}
+
+/* Select Wrappers */
+.cyber-select-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    padding: 0.4rem 0.8rem;
+    border-radius: 2px;
+}
+
+.cyber-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.cyber-select-wrap select {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+}
+
+.cyber-select-wrap select option {
+    background: var(--surface-card);
+    color: var(--text-primary);
+}
+
+/* Upload Pill */
+.upload-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(198, 255, 0, 0.1);
+    border: 1px solid var(--accent-neon);
+    color: var(--accent-neon);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 2px;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-neon);
+    box-shadow: 0 0 8px var(--accent-neon);
+}
+
+/* ==========================================================================
+   HERO SECTION (VOIDRUNNER HERO BANNER)
+   ========================================================================== */
+
+.cyber-hero {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 4rem;
+    align-items: center;
+    padding: 5rem 3rem 4rem 3rem;
+    border-bottom: 1px solid var(--border-subtle);
+    position: relative;
+    background: radial-gradient(circle at 20% 40%, rgba(198, 255, 0, 0.04) 0%, transparent 60%);
+}
+
+.hero-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--accent-neon);
+    margin-bottom: 1.5rem;
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 7vw, 6.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.hero-tagline {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 620px;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.hero-btn {
+    padding: 0.9rem 1.8rem;
+    font-size: 0.85rem;
+}
+
+.hero-banner-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    padding: 2rem;
+    border-radius: 2px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-banner-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    filter: brightness(0.95) contrast(1.1);
+}
+
+/* ==========================================================================
+   TICKER / MARQUEE BAR (VOIDRUNNER SIGNATURE)
+   ========================================================================== */
+
+.ticker-bar {
+    width: 100%;
+    overflow: hidden;
+    background: #000000;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.75rem 0;
+    white-space: nowrap;
+}
+
+.ticker-track {
+    display: inline-block;
+    white-space: nowrap;
+    animation: tickerScroll 30s linear infinite;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--accent-neon);
+}
+
+.ticker-track span {
+    margin-right: 2.5rem;
+}
+
+@keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* ==========================================================================
+   MAIN DASHBOARD CONTENT CONTAINER
+   ========================================================================== */
+
+.main-content {
+    flex: 1;
+    padding: 3rem;
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.view-header-bar {
+    margin-bottom: 2rem;
+}
+
+.current-view-title {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+}
+
+.content-wrapper {
+    width: 100%;
+}
+
+.view-panel {
+    display: none;
+}
+
+.view-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   CYBER CARDS & GRID LAYOUT
+   ========================================================================== */
+
+.cyber-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1.75rem;
+    border-radius: 2px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.cyber-card:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-card-hover);
+}
+
+.card-meta {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent-neon);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+}
+
+.cyber-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.card-header-bar {
+    margin-bottom: 1.5rem;
+}
+
+/* KPI Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.kpi-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+}
+
+.highlight-card {
+    border-color: rgba(198, 255, 0, 0.4);
+    background: radial-gradient(circle at top left, rgba(198, 255, 0, 0.08), transparent 70%), var(--surface-card);
+}
+
+.kpi-value {
+    font-family: var(--font-heading);
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: 0.5rem 0 1rem 0;
+}
+
+.top-activity-text {
+    font-size: 1.6rem;
+    word-break: break-word;
+}
+
+.kpi-subtext {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.kpi-split {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+/* Focus Balance Bars */
+.focus-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.focus-progress-bar {
+    display: flex;
+    height: 10px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1px;
+    overflow: hidden;
+}
+
+.focus-progress-bar #kpi-bar-inst {
+    background: var(--accent-magenta);
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
+}
+
+.focus-progress-bar #kpi-bar-stud {
+    background: var(--accent-neon);
+    box-shadow: 0 0 10px var(--accent-neon-glow);
+}
+
+.focus-values {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+}
+
+.focus-values .kpi-value {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+/* Full Width Cards */
+.full-width-card {
+    width: 100%;
+}
+
+.main-bar-container {
+    height: 420px;
+    width: 100%;
+}
+
+/* ==========================================================================
+   DAY BY DAY VIEW STYLES
+   ========================================================================== */
+
+.controls-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.mb-20 { margin-bottom: 1.5rem; }
+.mt-20 { margin-top: 1.5rem; }
+.mt-40 { margin-top: 2.5rem; }
+
+.charts-grid-full {
+    width: 100%;
+}
+
+.timeline-chart-wrapper {
+    height: 380px;
+    width: 100%;
+}
+
+.charts-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.column-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.cyber-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    min-height: 400px;
+    max-height: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Custom Scrollbars */
+.cyber-scroll-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.cyber-scroll-container::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+.cyber-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 2px;
+}
+
+.cyber-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-neon);
+}
+
+.empty-state-text {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 3rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.stat-center-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.giant-stat-number {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin: 1rem 0;
+}
+
+.stat-total {
+    font-size: 2rem;
+    color: var(--text-secondary);
+}
+
+.stat-caption {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+/* Activity item rows in Day view */
+.activity-time-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+}
+
+.activity-time-row:hover {
+    border-color: var(--accent-neon);
+}
+
+.activity-time-row .act-name {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.activity-time-row .act-time {
+    color: var(--accent-neon);
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   COMMENTS & CASE STUDY VIEW STYLES
+   ========================================================================== */
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.comments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+}
+
+.comment-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1.5rem;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.comment-card:hover {
+    border-color: var(--border-strong);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent-neon);
+}
+
+.comment-time {
+    color: var(--text-secondary);
+}
+
+.comment-body {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Case Study Section */
+.case-study-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 1.5rem;
+}
+
+.case-study-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1.75rem;
+    border-radius: 2px;
+}
+
+.case-study-card h4 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    color: var(--accent-neon);
+    margin-bottom: 0.75rem;
+}
+
+.case-study-card p {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+.case-study-timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.case-study-timeline-chart {
+    height: 380px;
+    width: 100%;
+}
+
+/* ==========================================================================
+   FOOTER (VOIDRUNNER EDITORIAL FOOTER)
+   ========================================================================== */
+
+.cyber-footer {
+    background: #000000;
+    border-top: 1px solid var(--border-subtle);
+    padding: 5rem 3rem 2rem 3rem;
+    margin-top: 5rem;
+}
+
+.footer-cta {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 5rem auto;
+}
+
+.footer-meta {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+}
+
+.footer-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.footer-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.back-to-top {
+    color: var(--accent-neon);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.back-to-top:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .cyber-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .cyber-hero {
+        grid-template-columns: 1fr;
+        padding: 3rem 1.5rem;
+    }
+
+    .charts-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .main-content {
+        padding: 1.5rem;
+    }
+}

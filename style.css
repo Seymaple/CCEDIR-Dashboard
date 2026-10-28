@@ -223,6 +223,13 @@ h4 {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+.nav-item .icon svg {
+    width: 32px;
+    height: 32px;
+    display: block;
+    fill: currentColor;
+}
+
 .nav-item .text-label {
     display: none;
 }
@@ -528,6 +535,211 @@ h4 {
     line-height: 1.6;
     color: var(--text-primary);
     margin-top: 1rem;
+}
+
+.case-study-intro {
+    margin-bottom: 2rem;
+}
+
+.case-study-intro h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.case-study-intro p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 780px;
+}
+
+.case-study-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.insight-card {
+    background: var(--surface-color);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.insight-card-primary {
+    background: linear-gradient(135deg, rgba(254, 86, 120, 0.15), rgba(34, 211, 238, 0.12));
+}
+
+.insight-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-primary);
+    margin-bottom: 0.75rem;
+}
+
+.insight-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.insight-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+}
+
+.insight-card p,
+.insight-subtext {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.insight-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.insight-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.insight-list li strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.insight-card-empty {
+    justify-content: center;
+    text-align: center;
+}
+
+.insight-card-button {
+    border: 1px solid #e2e8f0;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    background: #ffffff;
+}
+
+.insight-card-button:hover,
+.insight-card-button:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+    outline: none;
+    border-color: #cbd5e1;
+}
+
+.insight-card-button.active {
+    border: 2px solid var(--accent-primary);
+    background: linear-gradient(135deg, rgba(254, 86, 120, 0.16), rgba(34, 211, 238, 0.12));
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.insight-card-button.active::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.12);
+    pointer-events: none;
+}
+
+.insight-card-button:not(.active) {
+    background: #ffffff;
+    opacity: 0.95;
+}
+
+.insight-card-button[data-hover-hint] {
+    position: relative;
+}
+
+.insight-card-button[data-hover-hint]::after {
+    content: attr(data-hover-hint);
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    background: rgba(15, 23, 42, 0.9);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0.95;
+}
+
+.case-study-timeline-card {
+    margin-top: 1.5rem;
+    background: var(--surface-color);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-xl);
+    padding: 1.25rem 1.25rem 1rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.case-study-timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.case-study-timeline-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+}
+
+.case-study-reset-button {
+    border: 1px solid var(--accent-primary);
+    background: linear-gradient(135deg, var(--accent-primary), #f59e0b);
+    color: #ffffff;
+    border-radius: 999px;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(254, 86, 120, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.case-study-reset-button:hover,
+.case-study-reset-button:focus-visible {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+    box-shadow: 0 10px 22px rgba(254, 86, 120, 0.24);
+    outline: none;
+}
+
+.case-study-timeline-chart {
+    position: relative;
+    height: 320px;
+    min-height: 320px;
+}
+
+.case-study-timeline-chart canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* Removed animation to prevent html2canvas opacity bugs */

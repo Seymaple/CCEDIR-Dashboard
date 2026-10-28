@@ -14,6 +14,7 @@ const colors = {
 // Charts references
 let overviewPieChart, overviewBarChart;
 let dayTimelineChart, dayFocusChart, dayBarChart;
+let caseStudyTimelineChart;
 
 // DOM Elements
 const dropZone = document.getElementById('drop-zone');
@@ -30,6 +31,8 @@ const commentDaySelect = document.getElementById('comment-day-select');
 const commentsContainer = document.getElementById('comments-container');
 const questionTypeSelect = document.getElementById('question-type-select');
 const questionsContainer = document.getElementById('questions-container');
+const caseStudyContent = document.getElementById('case-study-content');
+const caseStudyTimelineCanvas = document.getElementById('case-study-timeline-chart');
 
 // Global state for questions
 let currentQuestionEvents = [];
@@ -85,6 +88,7 @@ function applyTheme(themeName) {
             if (activeId === 'overview') updateOverview();
             if (activeId === 'day-by-day') updateDayView();
             if (activeId === 'comments') updateCommentsView();
+            if (activeId === 'case-study') updateCaseStudyView();
         }
 
     }, 50);
@@ -127,6 +131,10 @@ navItems.forEach(item => {
             viewTitle.textContent = 'Session Comments';
             if (logoEl) logoEl.style.display = 'none';
             updateCommentsView();
+        } else if (viewId === 'case-study') {
+            viewTitle.textContent = 'Case Study';
+            if (logoEl) logoEl.style.display = 'none';
+            updateCaseStudyView();
         }
     });
 });
@@ -265,6 +273,8 @@ function updateDashboard() {
         updateDayView();
     } else if (activeView === 'comments') {
         updateCommentsView();
+    } else if (activeView === 'case-study') {
+        updateCaseStudyView();
     }
 }
 
@@ -279,6 +289,303 @@ function formatMsToTime(ms) {
     if (minutes > 0) return `${minutes}m ${seconds}s`;
     return `${seconds}s`;
 }
+
+function updateCaseStudyView() {
+    if (!caseStudyContent) return;
+
+    if (!sessionsData.length) {
+        caseStudyContent.innerHTML = `
+            <div class="insight-card insight-card-empty">
+                <h3>Case Study insights</h3>
+                <p>Upload CSV data to create a quick narrative around the biggest shifts, concentration points, and pacing patterns in the dashboard.</p>
+            </div>
+        `;
+        if (caseStudyTimelineChart) {
+            caseStudyTimelineChart.destroy();
+            caseStudyTimelineChart = null;
+        }
+        return;
+    }
+
+    const insights = window.CaseStudyData?.getCaseStudyInsights(sessionsData);
+    if (!insights) {
+        caseStudyContent.innerHTML = `
+            <div class="insight-card insight-card-empty">
+                <h3>Case Study insights</h3>
+                <p>Analysis is not available yet. Please refresh the page and try again.</p>
+            </div>
+        `;
+        if (caseStudyTimelineChart) {
+            caseStudyTimelineChart.destroy();
+            caseStudyTimelineChart = null;
+        }
+        return;
+    }
+
+    const concentrationRows = (insights.activityBreakdown || []).slice(0, 3).map((item) => `
+        <li><span>${item.label}</span><strong>${item.share.toFixed(0)}%</strong></li>
+    `).join('');
+
+    const transitionRows = Object.entries(insights.transitionCounts || {})
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(1, 4)
+        .map(([label, count]) => `
+            <li><span>${label}</span><strong>${count} times</strong></li>
+        `)
+        .join('');
+
+    caseStudyContent.innerHTML = `
+        <button type="button" class="insight-card insight-card-button insight-card-primary" data-focus-mode="notable">
+            <div class="insight-label">Most notable pattern</div>
+            <h3>${insights.topActivityLabel}</h3>
+            <div class="insight-value">${insights.topActivityShare.toFixed(0)}%</div>
+            <p>${insights.topActivityLabel} accounts for the largest share of timed activity in the uploaded sessions.</p>
+        </button>
+
+        <button type="button" class="insight-card insight-card-button" data-focus-mode="concentration">
+            <div class="insight-label">Concentration</div>
+            <h3>${insights.concentrationSummary}</h3>
+            <div class="insight-value">${insights.concentrationShare.toFixed(0)}%</div>
+            <p>Combined share of the top three activity types.</p>
+            <ul class="insight-list">${concentrationRows || '<li><span>No activity data</span><strong>0%</strong></li>'}</ul>
+        </button>
+
+        <button type="button" class="insight-card insight-card-button" data-focus-mode="transitions">
+            <div class="insight-label">Transitions</div>
+            <h3>Most common Transition</h3>
+            <div class="insight-value">${insights.topTransitionLabel}</div>
+            <div class="insight-subtext"><strong>${insights.topTransitionCount} times</strong></div>
+            <p>A transition is a shift from one activity to another in the sequence.</p>
+            <ul class="insight-list">${transitionRows || '<li><span>No transitions detected</span><strong>0</strong></li>'}</ul>
+        </button>
+    `;
+
+    const focusButtons = caseStudyContent.querySelectorAll('.insight-card-button');
+    const resetButton = document.getElementById('case-study-reset-timeline');
+    let selectedFocusMode = null;
+
+    const applyFocusMode = (mode, { persist = false } = {}) => {
+        if (persist) {
+            selectedFocusMode = mode === 'default' ? null : mode;
+        }
+
+        const activeMode = selectedFocusMode || 'default';
+        focusButtons.forEach((button) => {
+            const buttonMode = button.getAttribute('data-focus-mode');
+            button.classList.toggle('active', buttonMode === activeMode);
+        });
+        renderCaseStudyTimeline(insights, activeMode);
+    };
+
+    focusButtons.forEach((button) => {
+        const mode = button.getAttribute('data-focus-mode');
+        button.addEventListener('mouseenter', () => {
+            button.setAttribute('data-hover-hint', 'Click to see timeline change');
+        });
+        button.addEventListener('focus', () => {
+            button.setAttribute('data-hover-hint', 'Click to see timeline change');
+        });
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            applyFocusMode(mode, { persist: true });
+        });
+        button.addEventListener('mouseleave', () => {
+            button.removeAttribute('data-hover-hint');
+        });
+        button.addEventListener('blur', () => {
+            button.removeAttribute('data-hover-hint');
+        });
+    });
+
+    if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            selectedFocusMode = null;
+            focusButtons.forEach((button) => button.classList.remove('active'));
+            renderCaseStudyTimeline(insights, 'default');
+        });
+    }
+
+    applyFocusMode('default');
+}
+
+function buildCaseStudyTimelineData() {
+    const timelineEvents = [];
+    const transitionIndexes = new Set();
+
+    (sessionsData || []).forEach((session) => {
+        const sessionEvents = [...(Array.isArray(session?.events) ? session.events : [])]
+            .map((event) => {
+                const startTime = event?.StartTime ? new Date(event.StartTime) : (event?.Timestamp ? new Date(event.Timestamp) : null);
+                const endTime = event?.EndTime ? new Date(event.EndTime) : (startTime ? new Date(startTime.getTime() + (Number(event?.DurationMs) || 0)) : null);
+                return {
+                    ...event,
+                    StartTime: startTime,
+                    EndTime: endTime,
+                    DurationMs: Number(event?.DurationMs) || (startTime && endTime ? endTime - startTime : 0)
+                };
+            })
+            .filter((event) => event && event.StartTime instanceof Date && !Number.isNaN(event.StartTime.getTime()))
+            .sort((a, b) => a.StartTime - b.StartTime);
+
+        let previousActivity = null;
+        sessionEvents.forEach((event) => {
+            const activityLabel = inferActivity(event);
+            timelineEvents.push({
+                activity: activityLabel,
+                durationMs: Math.max(Number(event.DurationMs) || 0, 60000),
+                startTime: event.StartTime,
+                endTime: event.EndTime,
+                sessionIndex: timelineEvents.length
+            });
+
+            if (previousActivity && previousActivity !== activityLabel) {
+                transitionIndexes.add(timelineEvents.length - 1);
+            }
+            previousActivity = activityLabel;
+        });
+    });
+
+    return { timelineEvents, transitionIndexes };
+}
+
+function renderCaseStudyTimeline(insights, mode = 'default') {
+    if (!caseStudyTimelineCanvas) return;
+
+    const { timelineEvents, transitionIndexes } = buildCaseStudyTimelineData();
+    if (!timelineEvents.length) {
+        if (caseStudyTimelineChart) {
+            caseStudyTimelineChart.destroy();
+            caseStudyTimelineChart = null;
+        }
+        return;
+    }
+
+    const topThreeLabels = new Set((insights?.activityBreakdown || []).slice(0, 3).map((item) => item.label));
+    const dominantLabel = insights?.topActivityLabel || '';
+    const mutedColor = '#d1d5db';
+
+    // Determine which activities to show based on mode
+    let visibleActivities = new Set();
+    if (mode === 'default') {
+        visibleActivities = new Set(timelineEvents.map(e => e.activity));
+    } else if (mode === 'notable') {
+        visibleActivities.add(dominantLabel);
+    } else if (mode === 'concentration') {
+        topThreeLabels.forEach(label => visibleActivities.add(label));
+    } else if (mode === 'transitions') {
+        visibleActivities = new Set(timelineEvents.map(e => e.activity));
+    }
+
+    // Get unique activities for y-axis
+    const uniqueActivities = [...new Set(timelineEvents.map(e => e.activity))].sort();
+
+    // Build timeline data, filtering based on mode
+    const timelineData = timelineEvents
+        .map((event, index) => {
+            const isVisible = visibleActivities.has(event.activity);
+            const isTransition = transitionIndexes.has(index);
+            
+            return {
+                x: [event.startTime.getTime(), event.endTime.getTime()],
+                y: event.activity,
+                activity: event.activity,
+                isVisible,
+                isTransition,
+                index
+            };
+        })
+        .filter(item => item.isVisible);
+
+    const getTimelineColor = (ctx) => {
+        const { isTransition, isVisible } = ctx.raw;
+        
+        if (mode === 'transitions' && isTransition) {
+            return '#ef4444';
+        }
+        if (mode === 'notable') {
+            return ctx.raw?.activity === dominantLabel ? '#ef4444' : mutedColor;
+        }
+        if (mode === 'concentration') {
+            return topThreeLabels.has(ctx.raw?.activity) ? '#3b82f6' : mutedColor;
+        }
+        return ctx.dataIndex % 2 === 0 ? colors.instructor : colors.student;
+    };
+
+    if (caseStudyTimelineChart) {
+        caseStudyTimelineChart.destroy();
+    }
+
+    // Dynamically size the container
+    const visibleActivityCount = [...new Set(timelineData.map(d => d.y))].length;
+    if (caseStudyTimelineCanvas.parentElement) {
+        caseStudyTimelineCanvas.parentElement.style.height = `${Math.max(280, visibleActivityCount * 45 + 80)}px`;
+    }
+
+    caseStudyTimelineChart = new Chart(caseStudyTimelineCanvas, {
+        type: 'bar',
+        data: {
+            datasets: [{
+                data: timelineData,
+                backgroundColor: getTimelineColor,
+                barPercentage: 0.5,
+                categoryPercentage: 1.0
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'minute',
+                        displayFormats: {
+                            minute: 'HH:mm'
+                        }
+                    },
+                    title: { display: true, text: 'Timestamp (EST)' },
+                    grid: { borderDash: [4, 4] }
+                },
+                y: {
+                    type: 'category',
+                    labels: uniqueActivities,
+                    title: { display: true, text: 'Activity', font: { size: 15, weight: '700' } },
+                    ticks: { font: { size: 14, weight: '700' }, color: '#000' },
+                    grid: { display: true }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => {
+                            return ctx[0].raw.y;
+                        },
+                        label: (ctx) => {
+                            const start = new Date(ctx.raw.x[0]);
+                            const end = new Date(ctx.raw.x[1]);
+                            const durationMs = end - start;
+                            const timeStr = `${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours()}:${end.getMinutes().toString().padStart(2, '0')}`;
+
+                            let modeLabel = '';
+                            if (ctx.raw.isTransition && mode === 'transitions') {
+                                modeLabel = ' (Transition)';
+                            }
+
+                            return [
+                                `Time range: ${timeStr}`,
+                                `Duration: ${formatMsToTime(durationMs)}${modeLabel}`
+                            ];
+                        }
+                    }
+                },
+                datalabels: { display: false }
+            }
+        }
+    });
+}
+
 
 // OVERVIEW VIEW LOGIC
 function updateOverview() {

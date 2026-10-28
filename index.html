@@ -44,6 +44,10 @@
                             style="width: 40px; height: auto; display: block;" /></span>
                     <span class="text-label">Comments</span>
                 </a>
+                <a href="#" class="nav-item" data-view="case-study" aria-label="Case Study Insights">
+                    <span class="icon"><img src="icons/case-study.png" alt="Case Study icon" style="width: 40px; height: auto; display: block;" /></span>
+                    <span class="text-label">Case Study</span>
+                </a>
             </nav>
         </aside>
 
@@ -232,6 +236,24 @@
                     </div>
                 </div>
 
+                <!-- Case Study View -->
+                <div id="view-case-study" class="view-panel" style="display: none;">
+                    <div class="case-study-intro">
+                        <h3>Case Study Highlights</h3>
+                        <p>These summaries surface patterns that may stand out in classroom engagement data and help frame a discussion around notable behaviors.</p>
+                    </div>
+                    <div id="case-study-content" class="case-study-grid"></div>
+                    <div class="case-study-timeline-card">
+                        <div class="case-study-timeline-header">
+                            <div class="case-study-timeline-title">Interactive Timeline</div>
+                            <button type="button" id="case-study-reset-timeline" class="case-study-reset-button">Full Session Timeline - Reset</button>
+                        </div>
+                        <div class="case-study-timeline-chart">
+                            <canvas id="case-study-timeline-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -239,6 +261,7 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="case-study-data.js"></script>
     <script src="app.js?v=3"></script>
 </body>
 
